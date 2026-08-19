@@ -1,0 +1,37 @@
+HNT FoodService BI V11.5.2 — BANCO REAL — SEFAZ FIX
+====================================================
+
+Esta revisão foi feita EXCLUSIVAMENTE sobre a base:
+HNT_FoodService_BI_V11_5_2_STREAMLIT_COM_BANCO_REAL
+
+ALTERAÇÕES
+1. DF-e / SEFAZ
+   - Corrigida a montagem de distDFeInt incluindo tpAmb antes de cUFAutor.
+   - Produção usa tpAmb=1; Homologação usa tpAmb=2.
+   - Aplicado tanto no distNSU quanto na consulta por chave.
+   - xMotivo agora aparece de forma explícita quando o cStat não é 137/138.
+   - ultNSU não é inventado: só avança quando a resposta realmente trouxer ultNSU.
+   - Log de sincronização marca como sucesso apenas cStat 137 ou 138.
+   - Adicionado Diagnóstico SEFAZ com endpoint, tpAmb, cUFAutor, preview do XML, validação do certificado e teste por chave de 44 dígitos sem alterar ultNSU.
+
+2. Controle Produção Proteínas
+   - Removida da INTERFACE a aba "Importar Mix".
+   - Dados históricos, tabelas e funções são preservados para não perder informação e manter compatibilidade.
+
+REFERÊNCIA OFICIAL
+- Portal Nacional da NF-e: pacote oficial "Distribuição de DF-e v1.04", publicado em 03/07/2026.
+- Nota Técnica 2014.002 v1.40, publicada em 03/07/2026, especifica a distribuição de documentos fiscais da NF-e.
+
+IMPORTANTE
+- Não apague o banco hnt_foodservice_v3.db.
+- Foi incluído hnt_foodservice_v3_BACKUP_PRE_SEFAZ_FIX.db como cópia de segurança pré-alteração.
+- O certificado PFX e sua senha NÃO são incluídos neste pacote.
+- Não digite ultNSU/maxNSU manualmente. O sistema deve receber estes valores do serviço oficial.
+
+TESTE SUGERIDO
+1. Abra DF-e SEFAZ.
+2. Entre em "Diagnóstico SEFAZ — conexão, schema e consulta por chave".
+3. Valide o certificado.
+4. Cole uma chave NF-e real de 44 dígitos e clique em "TESTAR CONSULTA POR CHAVE".
+5. Depois execute "SINCRONIZAR NOVOS DF-e AGORA".
+6. Observe cStat, xMotivo, ultNSU e maxNSU.

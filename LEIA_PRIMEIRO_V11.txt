@@ -1,0 +1,124 @@
+HNT FOODSERVICE BI V11 — CONTROLE OPERACIONAL
+
+BANCO DE DADOS
+Se existir:
+C:\SAAS - DOWNTOWN\hnt_foodservice_v3.db
+a V11 usa ESTE MESMO BANCO diretamente.
+
+Na primeira abertura, antes das migrações, cria:
+C:\SAAS - DOWNTOWN\hnt_foodservice_v3_BACKUP_PRE_V11.db
+
+As migrações da V11 são ADITIVAS. Não recriam products, invoices, movements,
+inventory, sales_daily ou os seus lançamentos anteriores.
+
+NOVIDADES
+
+1. CMV GERAL E SEMANAL
+- Venda consolidada usa sales_daily.
+- Compras = NF confirmadas + Compras Avulsas.
+- CMV Inventário = Estoque Inicial + Compras - Estoque Final.
+- Mostra Compras/Vendas %, CMV/Vendas % e CMV+Perdas/Vendas % por semana.
+
+2. COMPRAS AVULSAS
+Para compras onde só existe valor final.
+- Data
+- Fornecedor
+- Documento
+- Categoria opcional
+- Descrição
+- Valor final
+- Observações
+Não movimenta quantidade de estoque, pois não existe item/quantidade.
+Soma em Compras e CMV.
+
+3. CONFIGURAÇÃO DE CATEGORIAS
+Config. Operacional -> Categorias:
+- incluir no Inventário
+- incluir no Relatório de Compras
+- incluir no CMV
+- incluir no Controle de Produção
+
+4. CORREÇÃO DE PRODUTOS E ENTRADAS
+Config. Operacional -> Produtos:
+- nome
+- marca
+- categoria
+- subcategoria
+- unidade
+- custo médio vigente
+- ativo/inativo
+
+Config. Operacional -> Corrigir Entradas:
+- reabre uma NF já lançada com estorno seguro
+- permite corrigir associação, quantidade, valores, unidades e fatores
+- depois a NF deve ser confirmada novamente
+
+5. VENDAS
+Apuração mostra separadamente:
+- venda Balcão
+- clientes Balcão
+- ticket médio Balcão
+- venda Delivery
+- clientes Delivery
+- ticket médio Delivery
+- venda acumulada
+- clientes acumulados
+- ticket médio acumulado
+
+6. CONTROLE PRODUÇÃO SUSHI
+Produtos Controlados:
+- escolha quais SKUs deseja controlar
+- rendimento alvo
+- tolerância de variação
+
+Receitas / Produção:
+- cadastra preparações produzidas
+- define consumo teórico de cada ingrediente por unidade produzida
+- lança quantidade efetivamente produzida por dia
+
+Fechamento Diário:
+CENTRAL BRUTO
+- estoque inicial automático pelo fechamento anterior
+- compras/recebimento
+- perda no corte
+- produto limpo
+- fechamento real bruto
+- rendimento do corte
+
+CENTRAL PRODUTO LIMPO
+- estoque inicial automático
+- produto limpo produzido
+- retirada/transferência para Loja
+- fechamento real
+- estoque teórico e variação
+
+LOJA
+- estoque inicial automático pelo fechamento anterior
+- recebimento da Central
+- produção teórica por fichas
+- perdas registradas
+- estoque final real
+- consumo real
+- consumo teórico
+- estoque teórico
+- variação não explicada
+- custo médio do SKU
+- custo da perda/desvio
+
+FÓRMULAS
+Rendimento % = Produto Limpo / (Produto Limpo + Perda Corte)
+
+Consumo Real Loja =
+Estoque Inicial Loja + Recebimentos - Estoque Final Loja
+
+Consumo Teórico =
+Somatório(Quantidade Produzida x Consumo por Unidade) + Teórico Manual
+
+Variação Não Explicada =
+Consumo Real - Consumo Teórico - Perdas Registradas
+
+Custo da Variação =
+Variação Não Explicada x Custo Médio do SKU
+
+7. VALIDAÇÃO
+Execute VALIDAR_V11.bat.

@@ -1,0 +1,37 @@
+HNT FOODSERVICE BI - LOCAL STABLE 5
+
+1) Extraia esta pasta para um local fixo, por exemplo:
+   C:\HNT_FoodService_BI
+
+2) PRIMEIRA VEZ:
+   Execute INSTALAR_E_ABRIR.bat
+
+3) PRÓXIMAS VEZES:
+   Execute ABRIR.bat
+
+4) ACESSO EM CELULAR/TABLET NA MESMA REDE:
+   Execute ABRIR_REDE_LOCAL.bat
+
+5) DADOS:
+   O banco fica em:
+   hnt_foodservice_v3.db
+
+   NÃO apague esse arquivo.
+   Copie-o regularmente como backup.
+
+6) SE JÁ TEM UM BANCO COM DADOS:
+   Copie seu hnt_foodservice_v3.db antigo para esta pasta ANTES de abrir.
+   O sistema aplica somente migrações adicionais e preserva os registros existentes.
+
+7) SE NÃO ABRIR:
+   Execute DIAGNOSTICO.bat
+   e envie o arquivo diagnostico.txt.
+
+8) DF-e / SEFAZ:
+   Configure CNPJ, UF, PFX e senha dentro do sistema.
+   O PFX fica na pasta certificados.
+   A sincronização automática ocorre quando o sistema estiver aberto e configurado.
+
+9) IA:
+   É opcional. O sistema funciona sem IA.
+   Para usar a IA gratuita, configure uma GEMINI_API_KEY no Windows.

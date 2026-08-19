@@ -1,0 +1,78 @@
+HNT FOODSERVICE BI V11.5.1 — CUSTO MÉDIO TRIMESTRAL + NF DIRETA
+
+ALTERAÇÕES DESTA VERSÃO
+Somente duas regras funcionais foram alteradas sobre a V11.5:
+1. custo médio / inventário;
+2. abertura direta da NF a partir do Extrato de Custos.
+
+1. NOVA REGRA DE CUSTO MÉDIO
+O custo vigente passa a ser a MÉDIA PONDERADA PELA QUANTIDADE das entradas do trimestre.
+
+Fórmula:
+Custo Médio = Σ(Quantidade de Entrada × Custo Unitário da Entrada) / Σ(Quantidade de Entrada)
+
+Não é média aritmética simples dos preços.
+
+PERÍODOS FIXOS
+1º trimestre: 01/01 a 31/03
+2º trimestre: 01/04 a 30/06
+3º trimestre: 01/07 a 30/09
+4º trimestre: 01/10 a 31/12
+
+Enquanto o trimestre está aberto, a média é recalculada com todas as entradas válidas
+do início do trimestre até a data de referência.
+
+Ao iniciar um novo trimestre:
+- a janela anterior deixa de receber novas entradas;
+- a nova média começa com as entradas do novo trimestre;
+- se ainda não existir entrada no trimestre novo, o último custo trimestral válido é
+  carregado temporariamente.
+
+Exemplo:
+Julho:
+10 KG a R$ 20,00
+Agosto:
+30 KG a R$ 30,00
+
+Média ponderada do trimestre:
+(10×20 + 30×30) / 40 = R$ 27,50
+
+Se em outubro entrar:
+20 KG a R$ 35,00
+o novo trimestre passa a trabalhar inicialmente com R$ 35,00 e será recalculado com
+as demais entradas de outubro a dezembro.
+
+2. INVENTÁRIO
+No inventário ABERTO:
+- custo deixou de ser livre quando existe histórico de entrada;
+- a coluna de custo é preenchida pela média ponderada trimestral na DATA DO INVENTÁRIO;
+- custo fica bloqueado na grade;
+- salvar a contagem não sobrescreve mais o custo médio fiscal;
+- produtos sem entrada válida podem continuar usando custo inicial/manual como fallback.
+
+Isso evita que um custo antigo gravado no inventário fique diferente do custo médio das entradas.
+
+3. ENTRADA DE NF
+Ao confirmar uma NF:
+- movimentos ENTRY continuam gravando o custo unitário real de cada linha;
+- depois de inserir todas as linhas, o sistema recalcula uma vez por produto a média
+  ponderada do trimestre;
+- cost_master é atualizado com essa média;
+- cost_history registra o período trimestral e a quantidade ponderada.
+
+4. REABERTURA / EXCLUSÃO DE NF
+Quando uma NF é reaberta ou excluída:
+- a entrada é removida;
+- o custo do produto é recalculado novamente pela média ponderada trimestral;
+- não reaproveita simplesmente o último custo histórico antigo.
+
+5. EXTRATO DE CUSTOS -> NF
+Ao escolher uma NF no Extrato de Custos e clicar para corrigir:
+- se a NF está ENTRADA, exige confirmação e faz o estorno seguro;
+- grava a NF escolhida como alvo de edição;
+- navega para Notas / XML;
+- a NF correspondente já fica selecionada automaticamente no campo "Abrir / editar";
+- mostra aviso de "Edição direta" no topo da tela.
+
+6. PRESERVAÇÃO
+Todos os demais módulos e recursos da V11.5 foram preservados.

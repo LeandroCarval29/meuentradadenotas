@@ -1,0 +1,25 @@
+# Banco e dados operacionais
+*.db
+*.sqlite
+xmls/
+certificados/
+logos/
+exports/
+BACKUP_*.db
+*_BACKUP_*.db
+
+# Segredos
+.streamlit/secrets.toml
+.env
+*.pfx
+*.p12
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+
+# V11.5.2 - ESTE pacote leva deliberadamente o banco inicial REAL para o repositório PRIVADO.
+# Não torne este repositório público.
+!hnt_foodservice_v3.db

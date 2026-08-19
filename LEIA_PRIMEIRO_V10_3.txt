@@ -1,0 +1,9 @@
+HNT FOODSERVICE BI V10.3 — ASSOCIAÇÃO POR LISTA
+
+- A associação de cada item da NF agora usa uma lista suspensa pesquisável.
+- A lista contém todo o cadastro de produtos, inclusive inativos.
+- Correspondência por barcode e código aparece primeiro.
+- Nomes parecidos aparecem como sugestões.
+- Depois aparece o restante do cadastro.
+- Clique na lista e digite para filtrar.
+- O indicador visual de execução do Streamlit foi ocultado por CSS separado e seguro.

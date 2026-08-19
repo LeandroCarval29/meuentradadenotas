@@ -1,0 +1,123 @@
+HNT FOODSERVICE BI V11.4 — EXTRATOS CRÍTICOS + CATEGORIAS
+
+1. EXTRATO DE ITENS
+- Passa a listar TODOS os produtos de TODAS as categorias.
+- Inclui produtos inativos.
+- Pode filtrar por categoria, mas filtro vazio significa TODAS.
+- Mostra explicitamente:
+  Data do evento
+  Tipo
+  Quantidade
+  Custo
+  Valor
+  Saldo acumulado
+  Nota ID
+  Número NF
+  Data NF
+  Status NF
+  Fornecedor
+  Referência
+  Observações
+- NF pendente com produto já associado também aparece como "NF PENDENTE / ITEM FISCAL".
+- Permite corrigir cadastro do produto e sua classificação como proteína controlada.
+- Permite selecionar uma NF diretamente do extrato.
+- Se a NF já estiver como ENTRADA, exige confirmação e reabre/estorna antes da edição.
+- Depois navega para Notas / XML com a nota já selecionada.
+
+2. EXTRATO DE CUSTOS
+- Todos os produtos / categorias / inativos.
+- Histórico fiscal por invoice_items + invoices.
+- Mostra NF, data NF, fornecedor, SKU fornecedor, unidades, quantidades,
+  fatores de multiplicação/conversão, custo unitário convertido e valor do item.
+- Para cada entrada compara:
+  a) custo atual x custo fiscal anterior;
+  b) custo atual x mediana das 5 entradas anteriores.
+- Classificação:
+  OK
+  ATENÇÃO
+  CRÍTICO
+- Padrões iniciais:
+  ATENÇÃO >= 25% de variação absoluta;
+  CRÍTICO >= 50% de variação absoluta.
+- Os limites são configuráveis e persistidos em settings.
+- Custo <= 0 é sempre CRÍTICO.
+- O diagnóstico alerta para possíveis erros de:
+  unidade
+  fator de multiplicação
+  fator de conversão
+  quantidade
+  preço da NF
+- A própria NF pode ser aberta/reaberta a partir do extrato de custos.
+- O custo mestre também pode ser corrigido manualmente, com motivo, confirmação,
+  histórico de custos e correction_audit.
+- A classificação de proteína/categoria também pode ser corrigida no próprio extrato.
+
+3. CORRIGIR PROTEÍNA
+Nos Extratos é possível:
+- alterar categoria;
+- marcar/desmarcar Produto Controlado;
+- alterar família da proteína:
+  Salmão
+  Lombo Atum
+  Atum
+  Camarão
+  Peixe Branco / Ceviche
+  Tilápia
+  Polvo
+  Lula
+  Haddock
+  Kani
+  Frango
+  Pork
+  Carne / Filé Mignon
+  Outra
+
+4. CONFIGURAÇÃO OPERACIONAL / CATEGORIAS
+Foi acrescentado detector de categorias duplicadas por cadeia equivalente.
+
+NORMALIZAÇÃO
+Para detectar duplicidade, o sistema ignora:
+- maiúscula/minúscula;
+- acentos;
+- pontuação;
+- espaços.
+
+Exemplo:
+PEIXARIA
+peixaria
+ Peixária
+são consideradas a mesma cadeia normalizada.
+
+IMPORTANTE:
+O sistema NÃO une automaticamente singular/plural ou categorias apenas parecidas.
+Ex.: PEIXE e PEIXES continuam distintas até decisão manual.
+
+FLUXO DE UNIFICAÇÃO
+- mostra os grupos encontrados;
+- mostra variações;
+- mostra quantidade de produtos e compras avulsas afetadas;
+- usuário escolhe qual nome deve permanecer;
+- pode informar um nome canônico novo;
+- exige confirmação;
+- atualiza products.category;
+- atualiza loose_purchases.category;
+- combina as flags de category_settings;
+- preserva todas as relações por product_id em NF, inventários, movimentos,
+  perdas, produção e demais históricos;
+- registra category_alias_audit e correction_audit.
+
+5. SEGURANÇA
+Nenhuma NF ENTRADA é editada diretamente.
+Ao solicitar correção pelo extrato:
+- usuário confirma;
+- a entrada é reaberta;
+- movimentos são estornados pelo fluxo existente;
+- a nota fica disponível para correção;
+- depois deve ser confirmada novamente.
+
+6. BANCO
+Mantém o banco existente.
+Antes da evolução V11.4 tenta criar:
+hnt_foodservice_v3_BACKUP_PRE_V11_4.db
+
+O ZIP não contém cópia do banco real.

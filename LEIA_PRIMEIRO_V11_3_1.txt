@@ -1,0 +1,58 @@
+HNT FOODSERVICE BI V11.3.1 — SEMANAS FIXAS DE VENDAS E COMPRAS
+
+REGRA OPERACIONAL
+Para evitar duplicidade de datas, o sistema usa faixas exclusivas:
+
+1ª semana: dias 01 a 07
+2ª semana: dias 08 a 14
+3ª semana: dias 15 a 21
+4ª semana: dias 22 até o último dia do mês (28, 29, 30 ou 31)
+
+OBSERVAÇÃO
+O pedido original citou 14 como limite da 2ª e também início da 3ª semana,
+e 21 como limite da 3ª e também início da 4ª. Como um mesmo dia não pode
+ser somado duas vezes, a V11.3.1 mantém:
+- dia 14 dentro da 2ª semana;
+- dia 21 dentro da 3ª semana;
+- 3ª começa no dia 15;
+- 4ª começa no dia 22.
+
+ONDE FOI APLICADO
+1. Vendas -> Apuração Diária
+   Nova seção "Vendas e Compras — Semanas Fixas do Mês"
+   Mostra:
+   - mês;
+   - semana;
+   - data inicial;
+   - data final;
+   - vendas;
+   - compras;
+   - compras / vendas %;
+   - gráfico;
+   - exportação.
+
+2. CMV & BI
+   A antiga semana de calendário segunda-domingo foi substituída pelas semanas fixas.
+   Mostra por faixa:
+   - vendas;
+   - compras;
+   - compras/vendas %;
+   - estoque inicial;
+   - estoque final;
+   - CMV;
+   - CMV/vendas %;
+   - perdas;
+   - CMV + perdas / vendas %.
+
+COMPRAS
+A apuração semanal usa a função central de compras do sistema:
+- NF confirmadas;
+- Compras Avulsas;
+conforme a lógica já existente na V11.3.
+
+PERÍODOS QUE CRUZAM MESES
+Se o filtro atravessar dois ou mais meses, cada mês é quebrado novamente em suas
+4 semanas fixas. Nenhuma venda ou compra é duplicada.
+
+O restante da V11.3, incluindo DF-e/SEFAZ, XML automático e Controle de Produção
+Proteínas, foi preservado.

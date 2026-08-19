@@ -1,0 +1,105 @@
+HNT FOODSERVICE BI V11.3 — DF-e / XML AUTOMÁTICO
+
+OBJETIVO
+Receber NF-e destinadas ao CNPJ pelo Web Service oficial NFeDistribuicaoDFe,
+armazenar os XMLs localmente, importar automaticamente XML completo como NF PENDENTE
+e reduzir digitação ao mínimo.
+
+FLUXO
+SEFAZ -> NSU -> DF-e -> XML local -> NF PENDENTE -> associação automática fornecedor/SKU
+-> revisão somente do que estiver sem mapeamento -> DAR ENTRADA -> estoque/custo/CMV.
+
+AUTENTICAÇÃO
+Não existe token/API key específico para este fluxo.
+A aplicação usa:
+- CNPJ
+- Código UF IBGE
+- Certificado digital A1 PFX/P12
+- Senha do certificado
+- Ambiente Produção/Homologação
+- ultNSU persistido
+
+ENDPOINTS CONFIGURADOS
+Produção:
+https://www1.nfe.fazenda.gov.br/NFeDistribuicaoDFe/NFeDistribuicaoDFe.asmx
+
+Homologação:
+https://hom1.nfe.fazenda.gov.br/NFeDistribuicaoDFe/NFeDistribuicaoDFe.asmx
+
+A versão foi preparada considerando a NT 2014.002 v1.40, publicada em 03/07/2026.
+
+NOVO PAINEL DF-e / SEFAZ
+- Sincronização incremental por ultNSU
+- maxNSU e cStat visíveis
+- Histórico técnico de consultas
+- Caixa de NF-e pendentes
+- Filtro por emitente/CNPJ/NF/chave
+- Filtro XML completo x resumo
+- Reconsulta pontual por chave (consChNFe)
+- Reconsulta controlada em lote, no máximo 5 chaves por execução
+- Link/botão para baixar o XML armazenado
+- XML completo é importado automaticamente como NF PENDENTE
+- Botão ABRIR NOTA PREENCHIDA — SEM DIGITAÇÃO
+- Mapeamentos fornecedor+SKU já conhecidos são reaplicados automaticamente
+- Botão DAR ENTRADA AUTOMATICAMENTE quando todos os itens estão associados
+- Se faltarem associações, mostra exatamente quantos itens precisam ser alinhados
+- Depois do primeiro alinhamento fornecedor+SKU, a associação permanece para notas futuras
+
+SEGURANÇA DA ENTRADA
+Receber/importar XML NÃO movimenta estoque automaticamente.
+A entrada de estoque só é permitida quando:
+- existe XML completo
+- a NF foi criada/vinculada
+- todos os itens estão associados a produtos internos
+- quantidade convertida > 0
+- custo unitário convertido > 0
+- o usuário confirma a entrada
+
+XML RESUMO
+Quando o SEFAZ entrega apenas resNFe, o sistema:
+- guarda o resumo XML
+- mostra a chave
+- permite reconsultar a chave
+- não inventa itens
+- não cria estoque
+- aguarda XML completo
+
+IMPORTANTE
+A V11.3 não envia manifestação do destinatário automaticamente.
+Ela usa a distribuição oficial + consulta por chave.
+Isso foi mantido separado porque manifestação é um evento fiscal assinado e deve ser
+implementado/ativado somente após validação fiscal da operação desejada.
+
+ARQUIVOS LOCAIS
+XMLs ficam na pasta:
+xmls\
+
+O banco continua sendo:
+C:\SAAS - DOWNTOWN\hnt_foodservice_v3.db
+quando esse caminho existir.
+
+BACKUP
+Antes das migrações V11.3, o sistema tenta criar:
+C:\SAAS - DOWNTOWN\hnt_foodservice_v3_BACKUP_PRE_V11_3.db
+
+A V11.3 NÃO contém cópia do banco real do usuário.
+
+CONFIGURAÇÃO RECOMENDADA
+1. Configurações -> Empresa / SEFAZ
+2. Informar CNPJ
+3. Informar Código UF IBGE
+4. Ambiente Produção
+5. Carregar PFX/P12
+6. Testar certificado A1
+7. Configurar SEFAZ_PFX_PASSWORD como variável de ambiente/secret
+8. Abrir DF-e SEFAZ
+9. Sincronizar
+10. Abrir nota preenchida
+11. Alinhar apenas SKUs ainda desconhecidos
+12. Confirmar entrada
+
+LIMITAÇÃO DE TESTE DESTA ENTREGA
+O código foi compilado e validado estruturalmente neste ambiente.
+Não foi feita chamada real ao SEFAZ porque o certificado e a senha reais não foram
+fornecidos e não devem ser compartilhados aqui.
+Por isso a primeira chamada real deve ser feita no computador da loja com o PFX.

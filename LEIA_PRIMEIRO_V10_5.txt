@@ -1,0 +1,11 @@
+HNT FOODSERVICE BI V10.5
+
+- Não apaga seus dados.
+- Mantém o banco hnt_foodservice_v3.db.
+- Precisão configurável de 0 a 3 casas decimais.
+- Padrão: 3 casas.
+- Associação fornecedor + SKU passa a reaproveitar:
+  produto, fator multiplicação, fator conversão, unidade comercial e unidade de estoque.
+- Em Configurações há um botão para aproveitar as associações já feitas em notas antigas.
+- Essa rotina não altera notas, movimentos, saldos, inventários ou custos históricos.
+- Ao trocar de versão/pasta, use USAR_MEU_BANCO_SEM_PERDER_DADOS.bat.

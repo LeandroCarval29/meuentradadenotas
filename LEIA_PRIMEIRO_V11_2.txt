@@ -1,0 +1,217 @@
+HNT FOODSERVICE BI V11.2 — CONTROLE DE PRODUÇÃO PROTEÍNAS
+
+OBJETIVO
+Esta versão amplia o antigo "Controle Produção Sushi" para "Controle Produção Proteínas".
+
+A lógica foi reorganizada para ligar:
+MIX DE VENDAS -> ITEM/PLU -> PROTEÍNA -> FICHA TÉCNICA -> CONSUMO TEÓRICO -> CUSTO MÉDIO -> CMV TEÓRICO
+e depois comparar com:
+ESTOQUE INICIAL + ENTRADAS - ESTOQUE FINAL - PERDAS = CONSUMO REAL
+
+BANCO DE DADOS
+Mantém o mesmo banco:
+C:\SAAS - DOWNTOWN\hnt_foodservice_v3.db
+
+Antes das migrações V11.2, tenta criar:
+C:\SAAS - DOWNTOWN\hnt_foodservice_v3_BACKUP_PRE_V11_2.db
+
+As mudanças são ADITIVAS. Não recriam notas, produtos, vendas, movimentos ou inventários.
+
+NOVO MÓDULO
+Menu:
+CONTROLE PRODUÇÃO PROTEÍNAS
+
+Abas:
+1. Importar Mix
+2. Itens / Filtros
+3. Combos / Grupos
+4. Fichas Técnicas
+5. Vendas & CMV Proteínas
+6. Proteínas Controladas
+7. Padrões de Corte / Produção
+8. Fechamento Diário
+9. Histórico / Editar / Excluir
+10. Análise Física
+
+IMPORTAÇÃO DO MIX DE VENDAS
+Aceita o formato do anexo:
+- seções FL / FC / TS / TT
+- PLU
+- PLU (Itens)
+- Nome do Item
+- Preço padrão
+- Unidades vendidas
+- Total vendido
+
+A importação:
+- guarda o arquivo/período;
+- preserva todas as linhas;
+- monta um catálogo de itens;
+- classifica Peixaria / Proteínas, Sushi / Japonês, Poke Kauai, Rodízio e Outros;
+- identifica proteínas pelo nome;
+- gera sugestões de mercado para nomes reconhecíveis;
+- cria grupos por Canal + PLU.
+
+IMPORTANTE SOBRE "COMBO"
+Este relatório não possui coluna Tipo=Combo.
+Por isso a V11.2 NÃO inventa combos.
+Ela apresenta "Grupos de PLU" formados por PLU + PLU (Itens).
+O usuário pode filtrar:
+- com proteína sugerida;
+- sem proteína sugerida / alinhar manualmente.
+
+SUGESTÕES AUTOMÁTICAS
+Confirmado no nome:
+Salmão, Atum, Camarão, Polvo, Tilápia, Haddock, Peixe Branco/Ceviche,
+Lula, Kani, Frango, Pork, Carne/Filé Mignon etc.
+
+Conhecimento de mercado - SEMPRE VALIDAR:
+- Philadelphia / Filadélfia -> sugestão de Salmão
+- California -> sugestão de Kani
+
+Uma sugestão NÃO entra no CMV enquanto não virar FICHA TÉCNICA validada.
+
+ARQUIVO INICIAL
+O pacote inclui:
+dados_iniciais\Mix_Produtos_Canal_Venda_OFICIAL.xlsx
+dados_iniciais\MAPEAMENTO_INICIAL_GRUPOS_PROTEINAS.json
+
+No levantamento inicial foram identificados grupos relevantes com e sem proteína sugerida.
+O arquivo JSON é referência/auditoria; a fonte oficial dentro do sistema passa a ser a importação e a ficha técnica.
+
+FICHAS TÉCNICAS — RECOMENDADO
+Esta é a arquitetura recomendada para obter CMV de proteínas.
+
+Cada item/PLU vendido pode ter uma ou mais proteínas.
+
+Exemplo:
+POKE MIX SALMÃO E CAMARÃO
+- Salmão: 60 g
+- Camarão: 60 g
+
+Exemplo:
+SASHIMI SALMÃO 5 PEÇAS
+- Salmão: 5 x gramatura padrão da peça
+
+Exemplo:
+HOT PHILADELPHIA
+- associar Salmão somente depois de validar a receita;
+- cadastrar a porção real usada.
+
+Campos:
+- Item / PLU
+- SKU interno da proteína
+- Porção por unidade vendida
+- Unidade da porção: G / KG / UN
+- Margem de erro %
+- Observação
+
+Uma mesma venda pode possuir múltiplas proteínas.
+
+VENDAS & CMV PROTEÍNAS
+Somente Fichas Técnicas VALIDADAS entram no cálculo.
+
+Consumo Teórico da Proteína:
+Quantidade vendida x Porção padrão
+
+CMV Teórico da Proteína:
+Consumo Teórico x Custo Médio do SKU
+
+A tela mostra:
+- CMV teórico por proteína;
+- venda do item relacionada;
+- venda atribuída à proteína;
+- CMV %;
+- itens/vendas relevantes ainda sem ficha.
+
+VENDA ATRIBUÍDA
+Quando um item possui mais de uma proteína, a venda é distribuída entre as proteínas
+proporcionalmente ao CMV teórico de cada proteína.
+
+Isso evita que, por exemplo, um Poke Mix Salmão + Camarão tenha 100% da venda
+contabilizada integralmente nas duas proteínas.
+
+A coluna "Venda Item" continua disponível como venda relacionada e pode se repetir.
+A coluna "Venda Atribuída Proteína" é a indicada para análise não duplicada entre proteínas.
+
+PROTEÍNAS CONTROLADAS
+O antigo cadastro de Produtos Controlados foi ampliado.
+Agora possui:
+- Família da proteína;
+- Rendimento alvo;
+- Tolerância de variação;
+- Fonte do consumo teórico.
+
+Fontes:
+PRODUCTION = usa produção registrada;
+SALES = usa Mix de Vendas diário + Ficha Técnica;
+BOTH = soma as duas fontes.
+
+ATENÇÃO:
+Mix de Vendas só entra automaticamente no fechamento diário quando a importação tem
+Período Inicial = Período Final = o próprio dia.
+Um relatório agregado de vários dias NÃO é dividido artificialmente entre dias.
+
+CONTROLE FÍSICO
+Mantém a lógica V11.1:
+CENTRAL BRUTO
+Inicial + Compras - Enviado ao Corte - Outras Perdas = Final Teórico
+
+CORTE
+Enviado ao Corte - Produto Limpo - Perda de Corte = Variação de Massa
+
+RENDIMENTO
+Produto Limpo / Enviado ao Corte
+
+CENTRAL LIMPO
+Inicial Limpo + Produto Limpo - Transferência Loja - Perda Limpo = Final Teórico
+
+LOJA
+Consumo Real = Inicial + Recebimentos - Final - Perda Registrada
+
+VARIAÇÃO NÃO EXPLICADA
+Consumo Real - Consumo Teórico
+
+CUSTOS
+O sistema mantém:
+- Custo Médio Bruto
+- Custo Efetivo do Produto Limpo
+- CMV Real
+- CMV Teórico
+- Perdas
+- Variação não explicada
+
+EDIÇÃO / EXCLUSÃO
+- importações podem ser desativadas preservando auditoria;
+- fichas técnicas podem ser alteradas/desativadas;
+- produtos controlados podem ser alterados/removidos;
+- produção e fechamentos continuam alteráveis/excluíveis conforme V11.1.
+
+PASSOS RECOMENDADOS
+1. Fechar a versão anterior.
+2. Fazer cópia adicional do banco.
+3. Extrair V11.2.
+4. Executar VALIDAR_V11_2.bat.
+5. Abrir a V11.2 e confirmar "Banco em uso".
+6. Ir a Controle Produção Proteínas -> Importar Mix.
+7. Importar o relatório.
+8. Revisar Combos / Grupos.
+9. Criar/validar Fichas Técnicas.
+10. Conferir Vendas & CMV Proteínas.
+11. Configurar Proteínas Controladas para o controle físico diário.
+
+OBSERVAÇÃO DE QUALIDADE
+O arquivo anexo é suficiente para identificar nomes, PLUs, componentes e quantidades,
+mas NÃO contém a composição real/gramatura das receitas.
+Por isso a V11.2 usa sugestões apenas como rascunho e exige Ficha Técnica para o CMV.
+
+
+V11.2.1 — RELATÓRIO OFICIAL DE IMPORTAÇÃO
+O arquivo definido pelo usuário como fonte oficial é:
+Mix_Produtos_Canal_Venda (1)(2).xlsx
+
+Ele foi incorporado ao pacote como:
+dados_iniciais\Mix_Produtos_Canal_Venda_OFICIAL.xlsx
+
+Este é o arquivo que o botão de importação inicial utiliza.
+O sistema continua permitindo futuras importações do mesmo formato por upload.

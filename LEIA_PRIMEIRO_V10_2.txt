@@ -1,0 +1,43 @@
+HNT FOODSERVICE BI V10.2 — ENTRADA DE NF SIMPLES
+
+OBJETIVO
+Simplificar e estabilizar o fluxo:
+XML -> itens -> associação -> conversão/custo -> confirmar -> estoque/custos/compras.
+
+CORREÇÕES PRINCIPAIS
+- Corrigido erro "name 'json' is not defined".
+- Associação pesquisa TODO o cadastro de produtos, inclusive registros inativos/antigos.
+- Produtos inativos podem ser reativados no ato da associação.
+- Associação automática usa fornecedor+SKU e barcode já conhecidos.
+- Regra de fornecedor/SKU fica gravada para as próximas NF-e.
+- Tela da NF reduzida a 4 etapas.
+- Botão Confirmar Entrada só habilita quando todos os itens estão associados e com custo/quantidade válidos.
+- Ao confirmar, NF, movimentos, estoque, custo médio e compras são atualizados juntos.
+- Mensagens de confirmação após as ações principais.
+
+FLUXO DA ENTRADA
+1. Importe XML.
+2. Abra a NF.
+3. Clique ASSOCIAR AUTOMATICAMENTE.
+4. Para os pendentes, escolha o item, pesquise produto e clique ASSOCIAR E GRAVAR.
+5. Confira unidade/fatores/custo e clique SALVAR AJUSTES.
+6. Clique CONFIRMAR ENTRADA E ATUALIZAR ESTOQUE.
+
+PRODUTOS QUE "SUMIRAM"
+O ZIP não inclui o seu banco para evitar sobrescrever seus dados.
+Se abriu uma versão nova sem copiar o banco anterior:
+- feche o sistema;
+- execute RECUPERAR_BANCO_ANTIGO.bat;
+- escolha o banco que mostra a quantidade correta de produtos/notas;
+- abra novamente a V10.2.
+
+DIAGNÓSTICO
+Execute DIAGNOSTICO_ENTRADA_V10_2.bat para verificar:
+- total de produtos ativos/inativos;
+- notas;
+- itens pendentes de associação;
+- movimentos de entrada;
+- divergências NF x estoque.
+
+SEGURANÇA
+O recuperador cria backup do banco atual antes de substituir.

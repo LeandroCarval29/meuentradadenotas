@@ -1,0 +1,13 @@
+streamlit>=1.37,<2
+pandas>=2.2,<3
+openpyxl>=3.1,<4
+xlrd>=2,<3
+lxml>=5.2,<7
+requests>=2.32,<3
+requests-pkcs12>=1.25,<2
+cryptography>=43,<47
+plotly>=5.24,<7
+reportlab>=4.2,<5
+Pillow>=10,<12
+
+XlsxWriter>=3.2,<4

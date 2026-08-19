@@ -1,0 +1,84 @@
+HNT FOODSERVICE BI V11.5 — HOSPEDAGEM RAILWAY
+
+ARQUITETURA RECOMENDADA PARA A PRIMEIRA HOSPEDAGEM
+- 1 serviço Streamlit
+- 1 réplica apenas
+- 1 Volume persistente montado em /data
+- HNT_DATA_DIR=/data
+- banco SQLite persistente em /data/hnt_foodservice_v3.db
+- XMLs em /data/xmls
+- certificado em /data/certificados
+- backups no mesmo volume + cópia externa periódica
+
+IMPORTANTE
+Enquanto o sistema usar SQLite, NÃO escale horizontalmente para duas ou mais réplicas.
+Para uma equipe interna pequena/média, a V11.5 foi reforçada com WAL, busy_timeout,
+índices e cache. Se o uso simultâneo crescer muito, a evolução correta será migrar a
+camada de dados para PostgreSQL.
+
+PASSO A PASSO
+1. Rode a V11.5 LOCALMENTE primeiro.
+2. Na primeira abertura, crie o administrador.
+3. Teste login, NF, estoque, vendas, extratos e produção.
+4. Em Configurações -> Backup, baixe uma cópia do banco completo.
+5. Crie um repositório privado no GitHub e envie a pasta V11.5 SEM banco/PFX/senhas.
+6. Crie um projeto na Railway e conecte o repositório.
+7. Adicione um Volume ao serviço e monte em:
+   /data
+8. Em Variables, configure:
+   HNT_DATA_DIR=/data
+   SEFAZ_PFX_PASSWORD=<senha do certificado>
+   GEMINI_API_KEY=<opcional>
+9. O arquivo railway.toml já fornece o Start Command do Streamlit.
+10. Gere/Public Networking para obter a URL HTTPS.
+11. Abra a URL. Em uma instalação vazia, crie o administrador inicial.
+12. Se quiser levar o banco real:
+    - entre no sistema hospedado;
+    - use Configurações -> Backup -> Restaurar;
+    - envie o backup .db obtido localmente;
+    - reinicie o serviço.
+    Observação: se o banco restaurado ainda não tiver usuários V11.5, na próxima abertura
+    o sistema pedirá novamente a criação do primeiro administrador.
+13. Em Configurações -> Empresa / SEFAZ, carregue o PFX.
+    Como HNT_DATA_DIR=/data, ele será salvo no volume persistente.
+14. Teste DF-e/SEFAZ.
+15. Cadastre os demais usuários em Usuários & Acessos.
+
+USUÁRIOS
+Perfis padrão:
+- ADMIN
+- GERENTE
+- ESTOQUE
+- OPERADOR
+- VISUALIZAÇÃO
+
+ADMIN pode escolher os módulos liberados individualmente.
+O último administrador ativo não pode ser desativado/rebaixado.
+
+SENHAS
+- mínimo de 8 caracteres;
+- hash scrypt com salt;
+- nunca são gravadas em texto puro;
+- 5 tentativas erradas geram bloqueio temporário de 10 minutos;
+- sessão expira após 12 horas;
+- administrador pode redefinir senha e exigir troca no próximo login.
+
+PERFORMANCE V11.5
+- cache de produtos/pesquisas;
+- cache curto de custos/configurações;
+- invalidação após alterações;
+- índices adicionais para produto, categoria, NF, item fiscal, movimentos e custos;
+- consultas de produtos não dependem mais da view agregada para cada busca;
+- busy_timeout ampliado para reduzir erros de banco ocupado;
+- PRAGMA optimize;
+- preservação integral dos módulos da V11.4.
+
+SEGURANÇA DE HOSPEDAGEM
+Nunca envie ao GitHub:
+- banco .db;
+- PFX/P12;
+- senha PFX;
+- secrets.toml;
+- .env.
+
+O .gitignore fornecido já bloqueia esses arquivos mais comuns.

@@ -1,0 +1,67 @@
+HNT FOODSERVICE BI V11.5 — REVISÃO DE PERFORMANCE E ACESSOS
+
+PRESERVAÇÃO
+A comparação estrutural confirmou:
+- todos os 27 módulos/páginas da V11.4 continuam presentes;
+- nenhum módulo da V11.4 foi removido;
+- foi adicionado somente o módulo "Usuários & Acessos".
+
+MELHORIAS DE VELOCIDADE
+1. Cache de pesquisa de produtos (TTL curto).
+2. Cache de custo vigente.
+3. Cache curto das configurações.
+4. Cache do extrato fiscal crítico.
+5. Limpeza central de cache após gravações relevantes.
+6. Novos índices SQLite:
+   products(active,category,name)
+   products(code)
+   products(name)
+   products(category)
+   invoice_items(supplier_code)
+   invoice_items(product_id,invoice_id)
+   movements(invoice_id)
+   cost_history(product_id,event_date)
+   invoices(status,issue_date)
+   loose_purchases(category,purchase_date,active)
+7. Consulta de produtos reescrita para evitar depender da view agregada completa em toda busca.
+8. busy_timeout ampliado.
+9. PRAGMA optimize no startup.
+
+USUÁRIOS
+- primeiro acesso cria ADMIN sem senha padrão embutida;
+- senha com scrypt + salt;
+- bloqueio temporário após tentativas inválidas;
+- perfis + módulos;
+- login/logout;
+- troca obrigatória de senha;
+- reset por administrador;
+- proteção contra remoção do último administrador;
+- logs passam a usar o usuário autenticado quando disponível.
+
+HOSPEDAGEM
+A aplicação aceita:
+HNT_DATA_DIR
+HNT_DB_PATH
+
+Isso permite manter o comportamento Windows atual e também usar volume persistente
+na nuvem sem alterar o código.
+
+LIMITAÇÃO IMPORTANTE
+A V11.5 ainda usa SQLite. Para hospedagem inicial:
+- 1 réplica;
+- volume persistente;
+- equipe interna.
+
+Para crescimento maior e alta simultaneidade, recomenda-se uma futura migração da camada
+de banco para PostgreSQL antes de habilitar múltiplas réplicas.
+
+VALIDAÇÃO FEITA NESTA ENTREGA
+- py_compile app.py;
+- AST;
+- comparação de páginas V11.4 x V11.5;
+- teste do algoritmo scrypt;
+- verificação estática de login, usuários, módulos, ambiente de dados e índices;
+- nenhum banco real incluído no ZIP.
+
+Não foi realizado teste real de login em navegador/Streamlit nem implantação Railway
+neste ambiente.

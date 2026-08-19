@@ -1,0 +1,30 @@
+HNT FOODSERVICE BI V10.4 — ENTRADA DE NF EM GRADE
+
+A Entrada de Nota foi simplificada para uma única tabela.
+
+Cada linha mostra:
+- item do fornecedor
+- descrição
+- barcode
+- unidade comercial
+- unidade de estoque
+- quantidade fiscal
+- valor do item
+- fator multiplicação
+- fator conversão
+- PRODUTO ASSOCIADO
+
+PRODUTO ASSOCIADO é uma lista suspensa pesquisável com TODO o cadastro.
+
+BOTÕES
+GRAVAR NOTA:
+salva tudo sem movimentar estoque.
+
+GRAVAR E DAR ENTRADA:
+salva a tabela, valida associações/quantidades/custos e, estando tudo certo,
+grava movimentos de estoque, custos e compras.
+
+O botão de entrada não fica desabilitado por pendências escondidas:
+ao clicar, o sistema informa exatamente quais itens precisam de associação ou correção.
+
+Produtos novos podem ser cadastrados na própria tela.

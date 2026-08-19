@@ -1,0 +1,166 @@
+HNT FOODSERVICE BI V11.1 — PRODUÇÃO PRECISA
+
+BANCO
+A V11.1 mantém o mesmo banco:
+C:\SAAS - DOWNTOWN\hnt_foodservice_v3.db
+
+A V11 já criava um backup pré-migração:
+C:\SAAS - DOWNTOWN\hnt_foodservice_v3_BACKUP_PRE_V11.db
+
+As mudanças V11.1 são ADITIVAS:
+- novas colunas de produção;
+- nova tabela para uso real das produções;
+- histórico de renomeação de categorias.
+Não recria produtos, notas, movimentos, inventários ou vendas.
+
+1. CORREÇÃO DA EQUAÇÃO CENTRAL BRUTO
+Não inferimos mais o corte por Produto Limpo + Perda.
+
+Entradas:
+Estoque Inicial Bruto
++ Compras / Recebimentos
+- Quantidade Enviada ao Corte
+- Outras Perdas de Produto Bruto
+= Estoque Final Bruto Teórico
+
+Depois comparamos:
+Estoque Final Bruto Real - Estoque Final Bruto Teórico
+
+2. CONFERÊNCIA DE MASSA DO CORTE
+Quantidade Enviada ao Corte
+- Produto Limpo
+- Perda Registrada no Corte
+= Variação de Massa do Corte
+
+Ideal: próximo de zero.
+
+Rendimento:
+Produto Limpo / Quantidade Enviada ao Corte x 100
+
+3. ESTOQUE CENTRAL LIMPO
+Estoque Inicial Limpo
++ Produto Limpo Produzido
+- Transferência para Loja
+- Perda de Produto Limpo
+= Estoque Central Limpo Teórico
+
+4. ESTOQUE LOJA
+Estoque Inicial Loja de amanhã = Fechamento Real Loja de hoje.
+
+O sistema também faz isso para:
+- Central Bruto
+- Central Limpo
+
+Se o próximo fechamento já existir e o fechamento anterior for alterado,
+os estoques iniciais do próximo registro são sincronizados.
+
+Consumo Real Loja:
+Estoque Inicial
++ Recebimento
+- Estoque Final
+- Perda Registrada
+
+Consumo Teórico:
+Produções x Padrões de Corte/Receita
++ Consumo Teórico Manual
+
+Variação Não Explicada:
+Consumo Real - Consumo Teórico
+
+Estoque Loja Teórico:
+Estoque Inicial + Recebimentos - Consumo Teórico - Perdas
+
+5. PADRÃO DE CORTE
+Cada preparação pode ter:
+- gramatura padrão por corte em gramas;
+- número de unidades/cortes;
+- margem percentual permitida.
+
+Exemplo:
+20 g x 5 cortes = 100 g por preparação.
+
+Se foram produzidas 30 preparações:
+100 g x 30 = 3,000 kg teóricos.
+
+Você pode lançar o USO REAL.
+O sistema calcula:
+- cortes totais;
+- gramatura real média por corte;
+- erro percentual;
+- status OK / FORA DO PADRÃO.
+
+6. CUSTO
+Mostra:
+- Custo Médio Bruto do SKU;
+- Custo Efetivo do Produto Limpo;
+- CMV Real do Item;
+- CMV Teórico;
+- Custo das Perdas;
+- Custo da Variação Não Explicada.
+
+Custo Efetivo Limpo:
+Custo Médio Bruto / Rendimento
+
+Se não houver corte no dia:
+- usa o último rendimento real conhecido;
+- se não houver, usa o rendimento-alvo configurado.
+
+7. CATEGORIAS
+Config. Operacional -> Categorias
+
+Agora é possível:
+- criar categoria;
+- renomear categoria;
+- mesclar duas categorias;
+- ver quantos produtos serão afetados;
+- preservar histórico da alteração.
+
+Exemplo:
+PEIXE -> PEIXES
+
+A mudança atualiza produtos, configuração da categoria e compras avulsas.
+As categorias do cadastro de produtos passam a usar lista suspensa para reduzir duplicidades.
+
+8. ASSOCIAÇÕES & CONVERSÕES
+Novo módulo independente:
+ASSOCIAÇÕES & CONVERSÕES
+
+Permite pesquisar, criar, alterar e excluir:
+- fornecedor;
+- SKU fornecedor;
+- barcode;
+- produto associado;
+- fator multiplicação;
+- fator conversão / gramatura;
+- unidade comercial;
+- unidade de estoque.
+
+Tudo salvo aqui vira DEFAULT para as próximas NFs do mesmo Fornecedor + SKU.
+
+Opcionalmente aplica o novo default também às NFs pendentes.
+
+O processo de associação continua existindo na Entrada de Notas.
+
+9. ALTERAÇÃO / EXCLUSÃO / PESQUISA
+Controle de produção:
+- produtos controlados: pesquisar, alterar, remover;
+- preparações: criar, renomear, desativar;
+- padrões de corte: criar, alterar, excluir;
+- produção diária: alterar e excluir;
+- fechamentos: pesquisar, alterar e excluir;
+- análise: período e relatórios.
+
+10. ANÁLISE DE DESVIOS
+Por SKU:
+- rendimento;
+- consumo real;
+- consumo teórico;
+- perdas conhecidas;
+- variação não explicada;
+- CMV;
+- custo das perdas;
+- custo do desvio;
+- estoque teórico x real.
+
+IMPORTANTE
+Execute VALIDAR_V11_1.bat antes de começar novos lançamentos.

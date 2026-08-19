@@ -1,0 +1,44 @@
+HNT FOODSERVICE BI V11.5.2 — STREAMLIT COM BANCO REAL
+
+BANCO RECEBIDO E VALIDADO
+PRAGMA integrity_check: ok
+Tamanho: 1,224,704 bytes
+Produtos: 937
+Fornecedores: 22
+Notas: 64
+Itens de NF: 414
+Movimentos: 414
+Inventários: 0
+Registros de vendas: 98
+Usuários: 2
+
+O arquivo hnt_foodservice_v3.db incluído neste pacote é uma CÓPIA do banco enviado nesta conversa.
+
+COMO COLOCAR NO STREAMLIT QUE JÁ ESTÁ PUBLICADO
+1. Extraia este ZIP.
+2. Abra a pasta LOCAL do repositório GitHub que você já criou/clonou.
+3. Copie TODOS os arquivos deste pacote para dentro da pasta do repositório, substituindo os arquivos antigos.
+4. Confira que existem na raiz:
+   app.py
+   requirements.txt
+   hnt_foodservice_v3.db
+5. O repositório deve continuar PRIVADO.
+6. Faça Commit e Push pelo GitHub Desktop.
+   Alternativamente, se esta própria pasta já for o clone do repositório, execute:
+   ATUALIZAR_GITHUB_COM_BANCO_REAL.bat
+7. Aguarde o Streamlit Community Cloud detectar o novo commit e reiniciar o app.
+8. Atualize a URL do seu app.
+9. O sistema deverá abrir usando o banco real enviado.
+
+ATENÇÃO IMPORTANTE
+Este procedimento resolve AGORA a leitura do seu banco já gravado no Streamlit Cloud.
+Entretanto, o Community Cloud não oferece armazenamento local persistente garantido
+para um banco SQLite em operação. Em um reboot/redeploy, o ambiente pode voltar à cópia
+que está no GitHub. Portanto:
+
+- os dados JÁ EXISTENTES entram no site;
+- novas alterações feitas no site não devem ser tratadas como persistência definitiva;
+- para operação real contínua, o banco precisa depois ser migrado para um armazenamento
+  persistente (ex.: PostgreSQL/Supabase ou outro serviço apropriado).
+
+NÃO TORNE O REPOSITÓRIO PÚBLICO, pois esta versão contém seu banco operacional.
